@@ -1,0 +1,38 @@
+[project]
+name = "visionpilot-mcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "realhamzamalik2", email = "realhamzamalik@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "hsemotion-onnx>=0.3.1",
+    "mcp>=2.3,<3",
+    "mediapipe>=1.2.3",
+    "onnxruntime>=1.32.0",
+    "pillow>=13.0.0",
+    "pydantic>=2.12",
+    "pydantic-settings>=2.16.3",
+    "rapidocr>=3.3",
+    "torch>=2.15.0",
+    "torchvision>=0.29.2",
+    "transformers>=5",
+    "ultralytics>=8.4.210",
+]
+
+[project.scripts]
+visionpilot-mcp = "visionpilot_mcp:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.5.0",
+    "ruff>=0.17.6",
+]
