@@ -29,8 +29,10 @@ class Settings(BaseSettings):
     log_dir: Path = Field(default=Path("logs"))
     log_level: str = "INFO"
 
-    # 8 GB RAM budget: keep at most this many models in memory, evict least recently used.
-    max_loaded_models: int = Field(default=2, ge=1, le=8)
+    # 8 GB laptop: models are evicted (least recently used first) to keep their estimated RAM under this budget.
+    model_memory_budget_mb: int = Field(default=2500, ge=200)
+    # Loaded in a background thread at startup so the first question does not wait for a model load.
+    warmup_models: str = "yolo26n,florence2"
     result_cache_size: int = Field(default=128, ge=0)
     cpu_threads: int = Field(default=4, ge=1, le=64)
 
@@ -42,9 +44,16 @@ class Settings(BaseSettings):
     allow_remote_urls: bool = True
 
     yolo_imgsz: int = 640
+    depth_imgsz: int = 640
+    face_min_confidence: float = Field(default=0.5, ge=0.05, le=0.99)
+    video_max_frames: int = Field(default=60, ge=2, le=600)
     florence_model_id: str = "florence-community/Florence-2-base-ft"
     florence_num_beams: int = Field(default=3, ge=1, le=5)
     florence_max_new_tokens: int = Field(default=256, ge=16, le=1024)
+
+    @property
+    def warmup_list(self) -> list[str]:
+        return [name.strip() for name in self.warmup_models.split(",") if name.strip()]
 
     @field_validator("model_dir", "log_dir")
     @classmethod

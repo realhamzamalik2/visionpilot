@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import threading
+import time
+
 import pytest
 
 from visionpilot_mcp.cache import ResultCache
@@ -10,7 +13,7 @@ from visionpilot_mcp.schemas import DescribeImageResult, ImageInfo
 
 def test_registry_loads_lazily_and_reuses() -> None:
     loads: list[str] = []
-    registry = ModelRegistry(max_loaded=2)
+    registry = ModelRegistry(budget_mb=1000)
     registry.register("a", lambda: loads.append("a") or "model-a")
 
     assert loads == []  # nothing loaded at registration
@@ -19,21 +22,57 @@ def test_registry_loads_lazily_and_reuses() -> None:
     assert loads == ["a"]
 
 
-def test_registry_evicts_least_recently_used() -> None:
-    registry = ModelRegistry(max_loaded=2)
+def test_registry_evicts_least_recently_used_to_fit_budget() -> None:
+    registry = ModelRegistry(budget_mb=300)
     for name in ("a", "b", "c"):
-        registry.register(name, lambda n=name: f"model-{n}")
+        registry.register(name, lambda n=name: f"model-{n}", cost_mb=120)
 
     registry.get("a")
     registry.get("b")
     registry.get("a")  # a is now most recent
-    registry.get("c")  # evicts b
+    registry.get("c")  # 360 MB > 300: evicts b
     assert [m.name for m in registry.status()] == ["a", "c"]
+    assert registry.used_mb == 240
+
+
+def test_model_bigger_than_budget_still_loads_alone() -> None:
+    registry = ModelRegistry(budget_mb=100)
+    registry.register("small", lambda: "s", cost_mb=50)
+    registry.register("huge", lambda: "h", cost_mb=500)
+    registry.get("small")
+    assert registry.get("huge") == "h"
+    assert [m.name for m in registry.status()] == ["huge"]
+
+
+def test_loaded_models_stay_usable_while_another_loads() -> None:
+    registry = ModelRegistry(budget_mb=1000)
+    started = threading.Event()
+
+    def slow_loader() -> str:
+        started.set()
+        time.sleep(0.5)
+        return "slow"
+
+    registry.register("fast", lambda: "fast")
+    registry.register("slow", slow_loader)
+    registry.get("fast")
+    registry.warm_up(["slow"])
+    started.wait(1)
+    t0 = time.perf_counter()
+    assert registry.get("fast") == "fast"
+    assert time.perf_counter() - t0 < 0.2  # did not wait for the slow load
+
+
+def test_warm_up_swallows_errors() -> None:
+    registry = ModelRegistry(budget_mb=100)
+    registry.register("broken", lambda: 1 / 0)
+    registry.warm_up(["broken", "not-registered"], background=False)
+    assert registry.status() == []
 
 
 def test_registry_unknown_model() -> None:
     with pytest.raises(VisionToolError, match="Unknown model"):
-        ModelRegistry(max_loaded=1).get("nope")
+        ModelRegistry(budget_mb=100).get("nope")
 
 
 def _result(caption: str) -> DescribeImageResult:

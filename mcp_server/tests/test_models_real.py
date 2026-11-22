@@ -39,3 +39,17 @@ async def test_korean_ocr_reads_menu(real_app: VisionPilotApp, tmp_path) -> None
     text = result.structured_content["full_text"]
     assert "김치찌개" in text
     assert "메뉴" in text
+
+
+async def test_pose_and_depth_on_bus_photo(real_app: VisionPilotApp) -> None:
+    async with Client(real_app.mcp) as client:
+        pose = (await client.call_tool("estimate_pose", {"image": sample_photo()})).structured_content
+        depth = (await client.call_tool("estimate_depth", {"image": sample_photo()})).structured_content
+    assert pose["total"] >= 3
+    assert 0.1 < depth["median_m"] < 100
+
+
+async def test_faces_on_zidane(real_app: VisionPilotApp) -> None:
+    async with Client(real_app.mcp) as client:
+        data = (await client.call_tool("analyze_faces", {"image": sample_photo("zidane.jpg")})).structured_content
+    assert data["total"] >= 1
