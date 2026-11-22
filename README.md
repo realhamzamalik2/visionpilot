@@ -200,6 +200,3 @@ samples/                          demo media and manifest.json
 
 Because Ultralytics YOLO is AGPL-3.0, this project is released under **AGPL-3.0**. Gemini is used through Google's
 free tier; on that tier Google may use submitted content to improve its products, so do not send private images.
-
-Built by [Hamza Ghulam Nabi](https://github.com/realhamzamalik2), MS in Computer Science and Engineering
-(SeoulTech), with a research background in facial expression recognition.
