@@ -1,0 +1,46 @@
+# One command: docker compose up --build   then open http://localhost:3000
+# Needs GEMINI_API_KEY in .env. First start downloads about 600 MB of model weights into the "models" volume.
+services:
+  mcp:
+    build: ./mcp_server
+    volumes:
+      - models:/models
+      - ./data:/data          # uploads: the API passes these paths to the tools, so both mount them identically
+      - ./samples:/samples:ro
+    environment:
+      MODEL_MEMORY_BUDGET_MB: ${MODEL_MEMORY_BUDGET_MB:-2500}
+      WARMUP_MODELS: ${WARMUP_MODELS:-yolo26n,florence2}
+    mem_limit: 4g
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      MCP_URL: http://mcp:8765/mcp
+      API_HOST: 0.0.0.0
+      DATA_DIR: /data
+      SAMPLES_DIR: /samples
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - ./data:/data
+      - ./samples:/samples:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mcp
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  models:

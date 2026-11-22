@@ -8,7 +8,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { getHealth, type Health } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
-const REPO_URL = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/";
+const REPO_URL = process.env.NEXT_PUBLIC_REPO_URL ?? "https://github.com/realhamzamalik2/visionpilot";
 
 export function Header() {
   const [health, setHealth] = useState<Health | null>(null);
