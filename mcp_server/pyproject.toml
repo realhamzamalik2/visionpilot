@@ -1,17 +1,21 @@
 [project]
 name = "visionpilot-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "MCP server exposing pretrained, CPU-friendly vision models (YOLO26, Florence-2, PP-OCRv5 Korean) as tools"
 readme = "README.md"
 authors = [
-    { name = "realhamzamalik2", email = "realhamzamalik@gmail.com" }
+    { name = "Hamza Ghulam Nabi", email = "realhamzamalik@gmail.com" }
 ]
+license = "AGPL-3.0-or-later"
 requires-python = ">=3.11"
 dependencies = [
     "hsemotion-onnx>=0.3.1",
     "mcp>=2.3,<3",
     "mediapipe>=1.2.3",
+    "numpy>=1.26",
+    "onnx>=1.17",
     "onnxruntime>=1.32.0",
+    "onnxslim>=0.1.50",
     "pillow>=13.0.0",
     "pydantic>=2.12",
     "pydantic-settings>=2.16.3",
@@ -24,6 +28,8 @@ dependencies = [
 
 [project.scripts]
 visionpilot-mcp = "visionpilot_mcp:main"
+visionpilot-setup = "visionpilot_mcp.setup_models:main"
+visionpilot-check = "visionpilot_mcp.selfcheck:main"
 
 [build-system]
 requires = ["uv_build>=0.13.9,<0.14.0"]
@@ -36,3 +42,24 @@ dev = [
     "pytest-asyncio>=1.5.0",
     "ruff>=0.17.6",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-m 'not models'"
+markers = ["models: needs real model weights (run with: uv run pytest -m models)"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "S"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

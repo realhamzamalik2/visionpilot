@@ -2153,6 +2153,22 @@ wheels = [
 ]
 
 [[package]]
+name = "onnxslim"
+version = "0.1.99"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama" },
+    { name = "ml-dtypes" },
+    { name = "onnx" },
+    { name = "packaging" },
+    { name = "sympy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/ac/8610e7274fe6bf26b6269f91de5a2acd03bfa2133153e691fc93f71a6f64/onnxslim-0.1.99.tar.gz", hash = "sha256:d662d6a6c384b64fe7464527a5865020c4335f8619a4a1272512ca0cc266867c", size = 616093, upload-time = "2026-11-04T03:13:12.228Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/d1/063874f0c02d3c00a169bce3ccf24a4f42ffbc4263d4b1593499c39f7a4c/onnxslim-0.1.99-py3-none-any.whl", hash = "sha256:6c6a3ddbbb7c5426f8f9c38ed1917bb4ab6335919c7d973328ba520faca469e4", size = 248552, upload-time = "2026-11-04T03:13:10.931Z" },
+]
+
+[[package]]
 name = "opencv-contrib-python"
 version = "5.1.0.95"
 source = { registry = "https://pypi.org/simple" }
@@ -3624,7 +3640,11 @@ dependencies = [
     { name = "hsemotion-onnx" },
     { name = "mcp" },
     { name = "mediapipe" },
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "numpy", version = "2.5.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "onnx" },
     { name = "onnxruntime" },
+    { name = "onnxslim" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -3648,7 +3668,10 @@ requires-dist = [
     { name = "hsemotion-onnx", specifier = ">=0.3.1" },
     { name = "mcp", specifier = ">=2.3,<3" },
     { name = "mediapipe", specifier = ">=1.2.3" },
+    { name = "numpy", specifier = ">=1.26" },
+    { name = "onnx", specifier = ">=1.17" },
     { name = "onnxruntime", specifier = ">=1.32.0" },
+    { name = "onnxslim", specifier = ">=0.1.50" },
     { name = "pillow", specifier = ">=13.0.0" },
     { name = "pydantic", specifier = ">=2.12" },
     { name = "pydantic-settings", specifier = ">=2.16.3" },
