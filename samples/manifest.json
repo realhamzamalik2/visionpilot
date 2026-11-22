@@ -1,0 +1,14 @@
+{
+  "seoul/korean_menu.jpg": {
+    "title": "Noodle shop menu",
+    "questions": ["Read the Korean menu and translate it to English with prices.", "What is the cheapest dish, and when is the shop open?"]
+  },
+  "seoul/street_bus.jpg": {
+    "title": "Bus stop",
+    "questions": ["How many people are there, and how far away is the closest one?", "Describe the scene and find the bus."]
+  },
+  "retail/street_pan.mp4": {
+    "title": "People passing by",
+    "questions": ["How many people are visible over time, and when is it busiest?", "How long has the current number of people stayed the same?"]
+  }
+}

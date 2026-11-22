@@ -33,10 +33,14 @@ Rules:
    faces/engagement -> analyze_faces; scene context -> describe_image; videos -> process_video.
 3. Use exactly the media path given below as the `image` or `video_path` argument.
 4. If a tool fails, say so honestly or try one sensible alternative.
-5. Facial expressions are apparent expressions, not proof of how someone feels. Say "appears" or "looks".
-6. Finish by calling final_answer once. Keep the answer short and direct, in Markdown, and add evidence entries:
+5. Treat detections below 0.40 confidence as uncertain. Do not state them as facts: either leave them out, say they
+   are uncertain, or check them with find_phrase / describe_image. detect_objects only knows the 80 COCO classes,
+   so objects outside them (cameras, signs, shelves) may be mislabeled as a similar class.
+6. Facial expressions are apparent expressions, not proof of how someone feels. Say "appears" or "looks".
+7. Finish by calling final_answer once. Keep the answer short and direct, in Markdown, and add evidence entries:
    `step` is the step number of the tool call, `item_indices` index into that result's main list
-   (detections, objects, people, faces, matches, lines, or timeline frames), `label` is the phrase it supports.
+   (detections, objects, people, faces, matches, lines, or timeline frames), and `label` is a short phrase copied
+   word for word from your answer (e.g. "3 people"), so the interface can link that exact text to the regions.
 """
 
 MEDIA_ARG = {"image": "image", "video": "video_path"}
