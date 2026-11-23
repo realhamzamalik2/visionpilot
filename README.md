@@ -83,13 +83,19 @@ flowchart LR
 
 ### Evaluation (25 questions)
 
-<!-- Paste the summary table from evals/results/latest.md after running: uv run visionpilot-eval -->
-
 | Metric | Value |
 |---|---|
-| Tool selection accuracy | run `uv run visionpilot-eval` |
-| Answer accuracy | |
-| Task success (both) | |
+| Tool selection accuracy | 100% (25/25) |
+| Answer accuracy | 100% (25/25) |
+| Task success (both) | 100% (25/25) |
+| Mean tool calls per question | 1.32 |
+| Median / p90 latency | 7.4 s / 14.1 s |
+
+Run on 22 Nov 2026 with `gemini-3.5-flash-lite` as the planner, on the laptop described below.
+Many questions share the same three sample files, so most tool calls after the first hit the
+result cache; latency here is mostly planner time. Cold first calls are slower (see the next table).
+The set is small and written by the author, so treat 100% as "the pipeline works end to end",
+not as a benchmark score.
 
 Questions cover counting, distance, segmentation coverage, pose, grounding, Korean OCR and translation,
 and video timelines. See [`evals/`](evals/) for the questions and checks.
@@ -129,10 +135,13 @@ cd mcp_server; uv sync; uv run visionpilot-setup; cd ..   # downloads ~600 MB of
 cd backend;    uv sync; cd ..
 cd frontend;   npm install; cd ..
 
-powershell -ExecutionPolicy Bypass -File .\dev.ps1        # starts MCP server, API and web app
+powershell -ExecutionPolicy Bypass -File .\start.ps1      # one window: starts all three, opens the browser
 ```
 
-Open http://localhost:3000 and pick a sample. From the terminal you can also ask directly:
+`start.ps1` prefixes each log line with `[mcp]`, `[api]` or `[web]`, waits until everything is ready,
+opens http://localhost:3000 and stops all three with Ctrl+C. Prefer separate windows? Use `.\dev.ps1`.
+
+Pick a sample in the web app and ask a question. From the terminal you can also ask directly:
 
 ```powershell
 cd backend
