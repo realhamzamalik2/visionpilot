@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "MCP server exposing pretrained, CPU-friendly vision models (YOLO26, Florence-2, PP-OCRv5 Korean) as tools"
 readme = "README.md"
 authors = [
-    { name = "Hamza Ghulam Nabi", email = "realhamzamalik@gmail.com" }
+    { name = "Hamza Ghulam Nabi" }
 ]
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.11"

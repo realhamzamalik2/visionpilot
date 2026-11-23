@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "VisionPilot agent backend: FastAPI + Gemini planner + VisionPilot MCP vision tools, with a streamed trace"
 readme = "README.md"
 authors = [
-    { name = "Hamza Ghulam Nabi", email = "realhamzamalik@gmail.com" }
+    { name = "Hamza Ghulam Nabi" }
 ]
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.11"
